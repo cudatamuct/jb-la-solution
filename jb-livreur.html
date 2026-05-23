@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JB LIVREUR — JB LA SOLUTIONS 🇨🇲</title>
+<meta name="theme-color" content="#22C55E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--or:#E85D04;--ord:#C8450A;--bg:#0A0A0A;--sf:#141414;--sf2:#1E1E1E;--sf3:#282828;
+--bd:#2A2A2A;--tx:#F5F5F5;--mt:#999;--ok:#22C55E;--warn:#F59E0B;--err:#EF4444;--info:#3B82F6;
+--radius:14px;--radius-sm:8px;--font:'Outfit',sans-serif;
+--accent:#22C55E;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;padding:10px 16px;height:60px;}
+.logo-icon{width:36px;height:36px;background:var(--or);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;flex-shrink:0;}
+.logo-name{font-weight:800;font-size:15px;line-height:1.1;}
+.logo-sub{font-size:10px;color:var(--mt);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.status-toggle{display:flex;align-items:center;gap:8px;background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;cursor:pointer;transition:.3s;}
+.status-dot{width:10px;height:10px;border-radius:50%;transition:.3s;}
+.status-label{font-size:13px;font-weight:600;transition:.3s;}
+.status-toggle.online{border-color:var(--ok);background:rgba(34,197,94,.1);}
+.status-toggle.online .status-dot{background:var(--ok);}
+.status-toggle.online .status-label{color:var(--ok);}
+.status-toggle.offline .status-dot{background:var(--mt);}
+.status-toggle.offline .status-label{color:var(--mt);}
+
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--sf);border-top:1px solid var(--bd);display:flex;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;transition:.2s;gap:3px;}
+.bnav-item .ni{font-size:22px;}
+.bnav-item .nl{font-size:10px;color:var(--mt);}
+.bnav-item.active .ni,.bnav-item.active .nl{color:var(--ok);}
+.bnav-item.active{border-top:2px solid var(--ok);}
+
+.page{position:fixed;top:60px;left:0;right:0;bottom:64px;overflow-y:auto;display:none;animation:slideIn .25s ease;}
+.page.active{display:block;}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATUS BANNER */
+.status-banner{margin:16px;border-radius:var(--radius);padding:20px;display:flex;align-items:center;gap:14px;transition:.3s;}
+.status-banner.online{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);}
+.status-banner.offline{background:var(--sf2);border:1px solid var(--bd);}
+.status-banner-icon{font-size:36px;}
+.status-banner-text .title{font-size:16px;font-weight:700;}
+.status-banner-text .sub{font-size:13px;color:var(--mt);margin-top:2px;}
+
+/* COMMANDE CARD */
+.commande-card{margin:0 16px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;transition:.2s;}
+.commande-card.nouvelle{border-color:var(--or);animation:newOrder 1s ease infinite alternate;}
+@keyframes newOrder{from{border-color:var(--or);}to{border-color:var(--warn);}}
+.cmd-header{padding:14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bd);}
+.cmd-id{font-size:12px;color:var(--mt);}
+.cmd-type{font-size:13px;font-weight:700;flex:1;}
+.cmd-status{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;}
+.cmd-status.nouvelle{background:rgba(232,93,4,.15);color:var(--or);}
+.cmd-status.en-route{background:rgba(34,197,94,.15);color:var(--ok);}
+.cmd-status.terminee{background:rgba(153,153,153,.15);color:var(--mt);}
+.cmd-body{padding:14px;}
+.cmd-route{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.cmd-addr{display:flex;align-items:flex-start;gap:8px;}
+.addr-dot-sm{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.addr-dot-sm.from{background:var(--ok);}
+.addr-dot-sm.to{background:var(--or);}
+.cmd-addr-text{font-size:13px;}
+.cmd-addr-label{font-size:10px;color:var(--mt);}
+.cmd-footer{display:flex;align-items:center;justify-content:space-between;}
+.cmd-price{font-size:16px;font-weight:800;color:var(--ok);}
+.cmd-client{font-size:12px;color:var(--mt);}
+.cmd-actions{display:flex;gap:6px;}
+.cbtn{padding:8px 14px;border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;}
+.cbtn-accept{background:var(--ok);color:#fff;}
+.cbtn-refuse{background:transparent;border:1px solid var(--bd);color:var(--mt);}
+.cbtn-nav{background:var(--info);color:#fff;}
+.cbtn-done{background:var(--or);color:#fff;}
+.cbtn-wa{background:#25D366;color:#fff;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px;}
+.stat-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:16px;}
+.stat-num{font-size:24px;font-weight:800;color:var(--ok);}
+.stat-lbl{font-size:11px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.stat-sub{font-size:12px;color:var(--mt);margin-top:4px;}
+
+/* GPS MAP */
+.gps-map{margin:16px;border-radius:var(--radius);height:220px;background:var(--sf2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
+.gps-bg{position:absolute;inset:0;opacity:.05;background:repeating-linear-gradient(0deg,transparent,transparent 40px,#fff 40px,#fff 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,#fff 40px,#fff 41px);}
+.gps-pin{font-size:40px;animation:gpsPulse 2s infinite;}
+@keyframes gpsPulse{0%,100%{transform:scale(1) translateY(0);}50%{transform:scale(1.1) translateY(-4px);}}
+.gps-info-bar{margin:0 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.gps-info-bar .gi-icon{font-size:20px;}
+.gps-info-bar .gi-text{font-size:13px;color:var(--mt);}
+.gps-info-bar .gi-val{font-size:14px;font-weight:700;color:var(--ok);}
+
+/* HISTORIQUE */
+.history-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.hist-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;}
+.hist-icon{font-size:24px;width:44px;height:44px;background:var(--sf2);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.hist-info{flex:1;}
+.hist-route{font-size:13px;font-weight:600;}
+.hist-meta{font-size:11px;color:var(--mt);margin-top:2px;}
+.hist-price{font-size:15px;font-weight:800;color:var(--ok);}
+
+/* PROFIL LIVREUR */
+.liv-profile{margin:16px;background:linear-gradient(135deg,#1a3a1a,#0d2d0d);border:1px solid rgba(34,197,94,.3);border-radius:var(--radius);padding:24px;display:flex;align-items:center;gap:16px;}
+.avatar{width:70px;height:70px;border-radius:50%;background:rgba(34,197,94,.2);border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;font-size:30px;}
+.verified-badge{background:var(--ok);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:6px;display:inline-block;}
+
+/* DOCUMENTS */
+.docs-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;}
+.doc-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:12px;}
+.doc-icon{font-size:22px;}
+.doc-info{flex:1;}
+.doc-name{font-size:14px;font-weight:600;}
+.doc-status{font-size:11px;margin-top:2px;}
+.doc-status.ok{color:var(--ok);}
+.doc-status.pending{color:var(--warn);}
+.doc-status.needed{color:var(--err);}
+.doc-upload{padding:6px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--radius-sm);font-family:var(--font);font-size:12px;color:var(--tx);cursor:pointer;}
+
+.sec-title{font-size:17px;font-weight:700;padding:0 16px;margin:16px 0 12px;}
+
+/* TOAST */
+.toast-container{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;}
+.toast{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:10px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;animation:toastIn .3s ease;white-space:nowrap;}
+.toast.ok{border-color:var(--ok);color:var(--ok);}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--sf);border-radius:20px 20px 0 0;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;background:var(--bd);border-radius:2px;margin:12px auto;}
+.modal-header{padding:4px 16px 16px;display:flex;align-items:center;gap:10px;}
+.modal-title{font-size:18px;font-weight:700;flex:1;}
+.modal-close{width:32px;height:32px;border-radius:50%;background:var(--sf2);border:none;color:var(--tx);font-size:18px;cursor:pointer;}
+.modal-body{padding:0 16px 24px;}
+.inp{width:100%;padding:12px 14px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--radius-sm);color:var(--tx);font-family:var(--font);font-size:14px;margin-bottom:12px;transition:.2s;}
+.inp:focus{outline:none;border-color:var(--ok);}
+.inp::placeholder{color:var(--mt);}
+label.lbl{font-size:12px;color:var(--mt);margin-bottom:4px;display:block;font-weight:600;}
+.btn-primary{width:100%;padding:14px;background:var(--ok);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-secondary{width:100%;padding:14px;background:transparent;border:1px solid var(--bd);border-radius:var(--radius);color:var(--tx);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo-icon">JB</div>
+  <div>
+    <div class="logo-name">JB LIVREUR</div>
+    <div class="logo-sub">JB LA SOLUTIONS</div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-toggle offline" id="status-toggle" onclick="toggleStatus()">
+      <div class="status-dot"></div>
+      <span class="status-label" id="status-label">Hors ligne</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- PAGE: COMMANDES -->
+<div class="page active" id="page-commandes">
+  <div class="status-banner offline" id="status-banner">
+    <div class="status-banner-icon" id="status-icon">😴</div>
+    <div class="status-banner-text">
+      <div class="title" id="status-title">Vous êtes hors ligne</div>
+      <div class="sub" id="status-sub">Activez le statut pour recevoir des commandes</div>
+    </div>
+  </div>
+  <div class="sec-title">Commandes actives</div>
+  <div id="commandes-list"></div>
+  <div id="no-commandes" style="text-align:center;padding:40px 16px;display:none">
+    <div style="font-size:50px;margin-bottom:12px">🏍️</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:6px">Aucune commande</div>
+    <div style="font-size:13px;color:var(--mt)">Passez en ligne pour recevoir des commandes</div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: GPS -->
+<div class="page" id="page-gps">
+  <div class="sec-title" style="margin-top:8px">Navigation GPS</div>
+  <div class="gps-map">
+    <div class="gps-bg"></div>
+    <div class="gps-pin">🏍️</div>
+    <div style="font-size:13px;color:var(--mt);position:relative">Position en temps réel</div>
+    <div style="font-size:11px;color:var(--mt);position:relative">Google Maps API intégré</div>
+  </div>
+  <div class="gps-info-bar">
+    <div class="gi-icon">🎯</div>
+    <div style="flex:1">
+      <div class="gi-text">Destination</div>
+      <div style="font-size:13px;font-weight:600" id="gps-dest">Aucune destination active</div>
+    </div>
+    <div>
+      <div class="gi-text">ETA</div>
+      <div class="gi-val" id="gps-eta">—</div>
+    </div>
+  </div>
+  <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:12px;text-align:center">
+      <div style="font-size:20px;font-weight:800;color:var(--ok)" id="gps-km">0 km</div>
+      <div style="font-size:11px;color:var(--mt)">DISTANCE</div>
+    </div>
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:12px;text-align:center">
+      <div style="font-size:20px;font-weight:800;color:var(--warn)" id="gps-speed">0 km/h</div>
+      <div style="font-size:11px;color:var(--mt)">VITESSE</div>
+    </div>
+  </div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+    <button class="btn-primary" onclick="startNav()" style="background:var(--info)">🗺️ Ouvrir Google Maps</button>
+    <button class="btn-secondary" onclick="callClient()">📞 Appeler le client</button>
+  </div>
+</div>
+
+<!-- PAGE: HISTORIQUE -->
+<div class="page" id="page-historique">
+  <div class="sec-title" style="margin-top:8px">Historique des courses</div>
+  <div style="padding:0 16px;margin-bottom:16px">
+    <div class="stats-grid" style="padding:0">
+      <div class="stat-card" style="grid-column:1/-1;display:flex;align-items:center;gap:16px">
+        <div>
+          <div class="stat-num" id="hist-total-rev">0 FCFA</div>
+          <div class="stat-lbl">Revenus ce mois</div>
+        </div>
+        <div style="margin-left:auto">
+          <div style="font-size:20px;font-weight:800" id="hist-total-courses">0</div>
+          <div style="font-size:11px;color:var(--mt)">COURSES</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="history-list" id="history-list"></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: PROFIL -->
+<div class="page" id="page-profil-liv">
+  <div class="liv-profile">
+    <div class="avatar">🏍️</div>
+    <div>
+      <div style="font-size:18px;font-weight:800;color:#fff" id="liv-name">Mon Profil</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.7)" id="liv-phone">+237 6XX XXX XXX</div>
+      <div class="verified-badge" id="verified-badge">✓ Vérifié</div>
+    </div>
+  </div>
+  <div style="padding:0 16px;margin-bottom:16px">
+    <div class="stats-grid" style="padding:0">
+      <div class="stat-card"><div class="stat-num" id="prof-courses">0</div><div class="stat-lbl">Courses totales</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--warn)">⭐ 0</div><div class="stat-lbl">Note moyenne</div></div>
+    </div>
+  </div>
+  <div class="sec-title">Documents</div>
+  <div class="docs-list" id="docs-list"></div>
+  <div style="padding:16px;margin-top:8px">
+    <button class="btn-primary" onclick="openModal('modal-edit-profil-liv')">✏️ Modifier le profil</button>
+    <button class="btn-secondary" onclick="window.open('jb-client.html','_self')">← App Client</button>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottomnav">
+  <div class="bnav-item active" onclick="navTo('page-commandes',this)"><div class="ni">📋</div><div class="nl">Commandes</div></div>
+  <div class="bnav-item" onclick="navTo('page-gps',this)"><div class="ni">🗺️</div><div class="nl">GPS</div></div>
+  <div class="bnav-item" onclick="navTo('page-historique',this)"><div class="ni">📊</div><div class="nl">Historique</div></div>
+  <div class="bnav-item" onclick="navTo('page-profil-liv',this)"><div class="ni">👤</div><div class="nl">Profil</div></div>
+</div>
+
+<!-- MODAL COMMANDE DETAIL -->
+<div class="modal-overlay" id="modal-commande-detail">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="cmd-detail-title">Détail commande</div>
+      <button class="modal-close" onclick="closeModal('modal-commande-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="cmd-detail-body"></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT PROFIL -->
+<div class="modal-overlay" id="modal-edit-profil-liv">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Modifier le profil</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-profil-liv')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="lbl">Prénom & Nom</label>
+      <input class="inp" id="liv-edit-name" placeholder="Votre nom complet">
+      <label class="lbl">Téléphone</label>
+      <input class="inp" id="liv-edit-phone" placeholder="+237 6XX XXX XXX">
+      <label class="lbl">Type de véhicule</label>
+      <select class="inp" id="liv-edit-vehicule">
+        <option value="">Choisir le véhicule</option>
+        <option value="moto">Moto</option>
+        <option value="voiture">Voiture</option>
+        <option value="tricycle">Tricycle</option>
+        <option value="velo">Vélo</option>
+      </select>
+      <label class="lbl">Ville principale</label>
+      <input class="inp" id="liv-edit-ville" placeholder="Ex: Yaoundé">
+      <button class="btn-primary" onclick="saveProfilLiv()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COMMANDES_DEMO = [
+  {id:'CMD-001',type:'Livraison repas',client:'Jean-Paul',clientWA:'+237691001001',clientPhone:'+237691001001',from:'Chez Mama Ngo — Bastos',to:'Quartier Essos, Bloc D',distance:'3.2 km',prix:2000,status:'nouvelle',items:['Ndolé complet x1','Eau 1.5L x2']},
+  {id:'CMD-002',type:'Colis express',client:'Sylvie M.',clientWA:'+237691002002',clientPhone:'+237691002002',from:'Gare Voyageurs',to:'Ngousso Pharmacie',distance:'5.8 km',prix:3500,status:'nouvelle',items:['Colis médical — FRAGILE']},
+];
+const HISTORIQUE_DEMO = [
+  {id:'H-001',type:'Livraison repas',from:'Mfoundi',to:'Omnisport',date:'Aujourd\'hui 14h30',prix:1500,status:'terminée'},
+  {id:'H-002',type:'Colis express',from:'Gare',to:'Bastos',date:'Hier 10h15',prix:2500,status:'terminée'},
+  {id:'H-003',type:'Livraison courses',from:'Supermarché JB',to:'Ekounou',date:'Hier 16h45',prix:3000,status:'terminée'},
+  {id:'H-004',type:'Livraison repas',from:'Resto Bravo',to:'Mokolo',date:'22/01 12h00',prix:1800,status:'terminée'},
+];
+const DOCS = [
+  {nom:'Photo de profil',status:'ok',icon:'🤳'},
+  {nom:'Carte Nationale d\'Identité',status:'ok',icon:'🪪'},
+  {nom:'Carte grise du véhicule',status:'pending',icon:'📋'},
+  {nom:'Photo du véhicule',status:'needed',icon:'🏍️'},
+  {nom:'Assurance véhicule',status:'needed',icon:'📄'},
+];
+
+let isOnline = false;
+let activeCourses = [];
+let livProfile = JSON.parse(localStorage.getItem('jb_liv_profile')||'{}');
+
+function init(){
+  renderCommandes();
+  renderHistorique();
+  renderDocs();
+  updateProfileLivDisplay();
+}
+
+function navTo(pageId, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+function toggleStatus(){
+  isOnline = !isOnline;
+  const toggle = document.getElementById('status-toggle');
+  const label = document.getElementById('status-label');
+  const banner = document.getElementById('status-banner');
+  const icon = document.getElementById('status-icon');
+  const title = document.getElementById('status-title');
+  const sub = document.getElementById('status-sub');
+  if(isOnline){
+    toggle.className='status-toggle online';
+    label.textContent='En ligne';
+    banner.className='status-banner online';
+    icon.textContent='🟢';
+    title.textContent='Vous êtes disponible!';
+    sub.textContent='Les commandes arrivent en temps réel';
+    showToast('🟢','Vous êtes maintenant en ligne!','ok');
+    setTimeout(()=>simulateNewOrder(),3000);
+  } else {
+    toggle.className='status-toggle offline';
+    label.textContent='Hors ligne';
+    banner.className='status-banner offline';
+    icon.textContent='😴';
+    title.textContent='Vous êtes hors ligne';
+    sub.textContent='Activez le statut pour recevoir des commandes';
+    showToast('⭕','Vous êtes maintenant hors ligne');
+  }
+}
+
+function simulateNewOrder(){
+  if(!isOnline) return;
+  const order = COMMANDES_DEMO[Math.floor(Math.random()*COMMANDES_DEMO.length)];
+  const newOrder = {...order, id:'CMD-'+Date.now().toString().slice(-4), status:'nouvelle'};
+  activeCourses.unshift(newOrder);
+  renderCommandes();
+  showToast('🔔','Nouvelle commande reçue!','ok');
+  if(navigator.vibrate) navigator.vibrate([200,100,200]);
+}
+
+function renderCommandes(){
+  const list = document.getElementById('commandes-list');
+  const noCmd = document.getElementById('no-commandes');
+  if(!list) return;
+  if(activeCourses.length===0){
+    list.innerHTML='';
+    if(noCmd) noCmd.style.display='block';
+    return;
+  }
+  if(noCmd) noCmd.style.display='none';
+  list.innerHTML = activeCourses.map((c,idx)=>`
+    <div class="commande-card ${c.status==='nouvelle'?'nouvelle':''}" onclick="openCmdDetail(${idx})">
+      <div class="cmd-header">
+        <div>
+          <div class="cmd-id">${c.id}</div>
+          <div class="cmd-type">${c.type}</div>
+        </div>
+        <span class="cmd-status ${c.status}">${c.status==='nouvelle'?'NOUVELLE':'EN ROUTE'}</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-route">
+          <div class="cmd-addr"><div class="addr-dot-sm from"></div><div><div class="cmd-addr-label">Départ</div><div class="cmd-addr-text">${c.from}</div></div></div>
+          <div class="cmd-addr"><div class="addr-dot-sm to"></div><div><div class="cmd-addr-label">Destination</div><div class="cmd-addr-text">${c.to}</div></div></div>
+        </div>
+        <div class="cmd-footer">
+          <div><div class="cmd-price">${c.prix.toLocaleString('fr')} FCFA</div><div class="cmd-client">Client: ${c.client} • ${c.distance}</div></div>
+          <div class="cmd-actions">${c.status==='nouvelle'?
+            `<button class="cbtn cbtn-refuse" onclick="event.stopPropagation();refuserCourse(${idx})">Refuser</button><button class="cbtn cbtn-accept" onclick="event.stopPropagation();accepterCourse(${idx})">Accepter</button>`:
+            `<button class="cbtn cbtn-wa" onclick="event.stopPropagation();callClientWA('${c.clientWA}')">📱</button><button class="cbtn cbtn-done" onclick="event.stopPropagation();terminerCourse(${idx})">Terminé</button>`
+          }</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openCmdDetail(idx){
+  const c = activeCourses[idx];
+  if(!c) return;
+  document.getElementById('cmd-detail-title').textContent = c.type+' — '+c.id;
+  document.getElementById('cmd-detail-body').innerHTML = `
+    <div style="background:var(--sf2);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;line-height:2">
+        <div>👤 <strong>${c.client}</strong></div>
+        <div>📍 De: ${c.from}</div>
+        <div>🎯 À: ${c.to}</div>
+        <div>📏 Distance: ${c.distance}</div>
+        <div>💰 Prix: <strong style="color:var(--ok)">${c.prix.toLocaleString('fr')} FCFA</strong></div>
+      </div>
+    </div>
+    <div style="font-weight:700;margin-bottom:8px">Articles:</div>
+    ${c.items.map(i=>`<div style="padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px">• ${i}</div>`).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
+      <button class="cbtn cbtn-wa" onclick="callClientWA('${c.clientWA}')" style="padding:12px;border-radius:var(--radius-sm);font-family:var(--font)">📱 WhatsApp</button>
+      <button class="cbtn cbtn-nav" onclick="openGPS('${c.to}')" style="padding:12px;border-radius:var(--radius-sm);font-family:var(--font)">🗺️ Navigation</button>
+    </div>`;
+  openModal('modal-commande-detail');
+}
+
+function accepterCourse(idx){
+  activeCourses[idx].status='en-route';
+  renderCommandes();
+  closeModal('modal-commande-detail');
+  showToast('✅','Course acceptée! Bonne route!','ok');
+  document.getElementById('gps-dest').textContent = activeCourses[idx].to;
+  document.getElementById('gps-eta').textContent = '~20 min';
+  document.getElementById('gps-km').textContent = activeCourses[idx].distance;
+}
+function refuserCourse(idx){
+  activeCourses.splice(idx,1);
+  renderCommandes();
+  showToast('❌','Course refusée');
+}
+function terminerCourse(idx){
+  const c = activeCourses[idx];
+  HISTORIQUE_DEMO.unshift({id:c.id,type:c.type,from:c.from,to:c.to,date:'À l\'instant',prix:c.prix,status:'terminée'});
+  activeCourses.splice(idx,1);
+  renderCommandes();
+  renderHistorique();
+  showToast('🎉','Livraison terminée! +'+c.prix.toLocaleString('fr')+' FCFA','ok');
+}
+function callClientWA(wa){
+  window.open('https://wa.me/'+wa.replace(/\D/g,''),'_blank');
+}
+function openGPS(dest){
+  document.getElementById('gps-dest').textContent = dest;
+  closeModal('modal-commande-detail');
+  navTo('page-gps',document.querySelector('.bnav-item:nth-child(2)'));
+}
+
+function renderHistorique(){
+  const list = document.getElementById('history-list');
+  if(!list) return;
+  const total = HISTORIQUE_DEMO.reduce((s,h)=>s+h.prix,0);
+  const el = document.getElementById('hist-total-rev');
+  if(el) el.textContent = total.toLocaleString('fr')+' FCFA';
+  const el2 = document.getElementById('hist-total-courses');
+  if(el2) el2.textContent = HISTORIQUE_DEMO.length;
+  list.innerHTML = HISTORIQUE_DEMO.map(h=>`
+    <div class="hist-item">
+      <div class="hist-icon">🏍️</div>
+      <div class="hist-info">
+        <div class="hist-route">${h.from} → ${h.to}</div>
+        <div class="hist-meta">${h.type} • ${h.date}</div>
+      </div>
+      <div class="hist-price">+${h.prix.toLocaleString('fr')} FCFA</div>
+    </div>`).join('');
+}
+
+function renderDocs(){
+  const el = document.getElementById('docs-list');
+  if(!el) return;
+  el.innerHTML = DOCS.map(d=>`
+    <div class="doc-item">
+      <div class="doc-icon">${d.icon}</div>
+      <div class="doc-info">
+        <div class="doc-name">${d.nom}</div>
+        <div class="doc-status ${d.status}">${d.status==='ok'?'✓ Validé':d.status==='pending'?'⏳ En attente':'⚠️ Requis'}</div>
+      </div>
+      ${d.status!=='ok'?`<button class="doc-upload" onclick="uploadDoc('${d.nom}')">📤 Envoyer</button>`:''}
+    </div>`).join('');
+}
+
+function uploadDoc(nom){
+  const msg = `Bonjour JB LA SOLUTIONS, je souhaite envoyer mon document: ${nom}. Pouvez-vous me confirmer la marche à suivre?`;
+  window.open('https://wa.me/237600000000?text='+encodeURIComponent(msg),'_blank');
+}
+
+function startNav(){
+  const dest = document.getElementById('gps-dest').textContent;
+  if(dest==='Aucune destination active'){ showToast('⚠️','Acceptez une course d\'abord'); return; }
+  window.open('https://maps.google.com/?q='+encodeURIComponent(dest),'_blank');
+}
+function callClient(){ showToast('📞','Appel client...'); }
+
+function saveProfilLiv(){
+  const name = document.getElementById('liv-edit-name').value.trim();
+  const phone = document.getElementById('liv-edit-phone').value.trim();
+  if(name) livProfile.name=name;
+  if(phone) livProfile.phone=phone;
+  localStorage.setItem('jb_liv_profile',JSON.stringify(livProfile));
+  updateProfileLivDisplay();
+  closeModal('modal-edit-profil-liv');
+  showToast('✅','Profil mis à jour!','ok');
+}
+function updateProfileLivDisplay(){
+  const n = document.getElementById('liv-name');
+  const p = document.getElementById('liv-phone');
+  if(n && livProfile.name) n.textContent = livProfile.name;
+  if(p && livProfile.phone) p.textContent = livProfile.phone;
+}
+
+function openModal(id){ const m=document.getElementById(id); if(m){m.classList.add('open');document.body.style.overflow='hidden';}}
+function closeModal(id){ const m=document.getElementById(id); if(m){m.classList.remove('open');document.body.style.overflow='';}}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id);}));
+
+function showToast(icon,msg,type=''){
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');
+  t.className='toast '+(type||'');
+  t.textContent=icon+' '+msg;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// Simulate GPS movement
+setInterval(()=>{
+  if(isOnline){
+    const speed = document.getElementById('gps-speed');
+    if(speed) speed.textContent = Math.floor(Math.random()*60+10)+' km/h';
+  }
+},3000);
+
+init();
+</script>
+</body>
+</html>

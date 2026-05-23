@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JB CLIENT — JB LA SOLUTIONS 🇨🇲</title>
+<meta name="description" content="JB CLIENT — Marketplace, livraison, services, objets perdus. La Super App Camerounaise.">
+<meta name="theme-color" content="#E85D04">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--or:#E85D04;--ord:#C8450A;--bg:#0A0A0A;--sf:#141414;--sf2:#1E1E1E;--sf3:#282828;
+--bd:#2A2A2A;--tx:#F5F5F5;--mt:#999;--ok:#22C55E;--warn:#F59E0B;--err:#EF4444;--info:#3B82F6;
+--radius:14px;--radius-sm:8px;--font:'Outfit',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;padding:10px 16px;height:60px;}
+.logo-box{display:flex;align-items:center;gap:8px;}
+.logo-icon{width:36px;height:36px;background:var(--or);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;flex-shrink:0;}
+.logo-name{font-weight:800;font-size:15px;line-height:1.1;}
+.logo-sub{font-size:10px;color:var(--mt);letter-spacing:.5px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.icon-btn{width:36px;height:36px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:.2s;}
+.icon-btn:hover{background:var(--sf3);}
+.badge-dot{position:relative;}
+.badge-dot::after{content:'';position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--or);border-radius:50%;border:2px solid var(--bg);}
+/* BOTTOM NAV */
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--sf);border-top:1px solid var(--bd);display:flex;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;transition:.2s;gap:3px;}
+.bnav-item .ni{font-size:22px;transition:.2s;}
+.bnav-item .nl{font-size:10px;color:var(--mt);transition:.2s;}
+.bnav-item.active .ni,.bnav-item.active .nl{color:var(--or);}
+.bnav-item.active{border-top:2px solid var(--or);}
+/* PAGES */
+.page{position:fixed;top:60px;left:0;right:0;bottom:64px;overflow-y:auto;display:none;animation:slideIn .25s ease;}
+.page.active{display:block;}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* SEARCH BAR */
+.search-bar{margin:16px;display:flex;align-items:center;gap:8px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--radius);padding:10px 14px;transition:.2s;}
+.search-bar:focus-within{border-color:var(--or);}
+.search-bar input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:14px;flex:1;}
+.search-bar input::placeholder{color:var(--mt);}
+/* HERO */
+.hero{margin:16px;background:linear-gradient(135deg,var(--ord),var(--or));border-radius:var(--radius);padding:24px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:rgba(255,255,255,.08);border-radius:50%;}
+.hero::after{content:'';position:absolute;right:20px;bottom:-30px;width:80px;height:80px;background:rgba(255,255,255,.05);border-radius:50%;}
+.hero h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
+.hero p{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:16px;}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.hbtn{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;}
+.hbtn-white{background:#fff;color:var(--ord);}
+.hbtn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);}
+.hbtn:hover{transform:translateY(-1px);}
+/* SECTION TITLE */
+.sec-title{font-size:17px;font-weight:700;padding:0 16px;margin:20px 0 12px;}
+.sec-row{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin:20px 0 12px;}
+.sec-row span{font-size:17px;font-weight:700;}
+.see-all{font-size:13px;color:var(--or);cursor:pointer;}
+/* CATEGORIES */
+.cat-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;scrollbar-width:none;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cat-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.cat-icon{width:56px;height:56px;border-radius:16px;background:var(--sf2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:26px;transition:.2s;}
+.cat-item.active .cat-icon,.cat-icon:hover{background:var(--or);border-color:var(--or);}
+.cat-label{font-size:11px;color:var(--mt);text-align:center;max-width:60px;line-height:1.2;}
+/* SHOPS GRID */
+.shops-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px;}
+.shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.2s;}
+.shop-card:hover{border-color:var(--or);transform:translateY(-2px);}
+.shop-img{width:100%;height:110px;object-fit:cover;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:40px;}
+.shop-body{padding:10px;}
+.shop-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.shop-cat{font-size:10px;color:var(--or);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.shop-meta{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.shop-meta span{font-size:11px;color:var(--mt);}
+.shop-rating{color:var(--warn);font-size:11px;}
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px;}
+.prod-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.2s;}
+.prod-card:hover{border-color:var(--or);}
+.prod-img{width:100%;height:120px;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:44px;}
+.prod-body{padding:10px;}
+.prod-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.prod-price{font-size:15px;font-weight:800;color:var(--or);}
+.prod-shop{font-size:11px;color:var(--mt);margin-top:2px;}
+.prod-add{width:28px;height:28px;background:var(--or);border:none;border-radius:8px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;float:right;margin-top:-32px;}
+.prod-add:hover{background:var(--ord);}
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px;}
+.svc-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:.2s;}
+.svc-card:hover{border-color:var(--or);background:var(--sf2);}
+.svc-icon{font-size:28px;margin-bottom:6px;}
+.svc-name{font-size:11px;font-weight:600;color:var(--tx);}
+/* WORKERS LIST */
+.workers-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.worker-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;transition:.2s;}
+.worker-card:hover{border-color:var(--or);}
+.worker-avatar{width:52px;height:52px;border-radius:50%;background:var(--sf3);border:2px solid var(--or);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.worker-info{flex:1;}
+.worker-name{font-size:14px;font-weight:700;}
+.worker-skill{font-size:12px;color:var(--or);font-weight:600;}
+.worker-meta{font-size:11px;color:var(--mt);margin-top:2px;}
+.worker-actions{display:flex;gap:6px;}
+.wact-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--bd);background:var(--sf2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s;}
+.wact-btn:hover{background:var(--or);border-color:var(--or);}
+.online-dot{width:10px;height:10px;background:var(--ok);border-radius:50%;border:2px solid var(--sf);display:inline-block;margin-right:4px;}
+/* LOST OBJECTS */
+.lost-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.lost-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;}
+.lost-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.lost-icon{font-size:28px;}
+.lost-title{font-size:14px;font-weight:700;}
+.lost-type{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;}
+.lost-type.perdu{background:rgba(239,68,68,.15);color:#EF4444;}
+.lost-type.trouve{background:rgba(34,197,94,.15);color:#22C55E;}
+.lost-desc{font-size:13px;color:var(--mt);margin-bottom:8px;}
+.lost-meta{font-size:11px;color:var(--mt);display:flex;gap:12px;}
+/* MOTOMAN / LIVRAISON */
+.livraison-options{padding:0 16px;display:flex;flex-direction:column;gap:12px;}
+.liv-option{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.2s;}
+.liv-option:hover{border-color:var(--or);}
+.liv-option.selected{border-color:var(--or);background:rgba(232,93,4,.08);}
+.liv-icon-box{width:52px;height:52px;background:var(--sf2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.liv-info{flex:1;}
+.liv-name{font-size:14px;font-weight:700;}
+.liv-desc{font-size:12px;color:var(--mt);margin-top:2px;}
+.liv-price{font-size:13px;font-weight:700;color:var(--or);}
+/* CART */
+.cart-items{padding:0 16px;display:flex;flex-direction:column;gap:10px;}
+.cart-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:12px;display:flex;align-items:center;gap:10px;}
+.ci-img{width:50px;height:50px;border-radius:10px;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ci-info{flex:1;}
+.ci-name{font-size:13px;font-weight:600;}
+.ci-price{font-size:13px;color:var(--or);font-weight:700;}
+.ci-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qty-btn{width:26px;height:26px;border-radius:8px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.qty-val{font-size:14px;font-weight:600;min-width:20px;text-align:center;}
+.cart-summary{margin:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:16px;}
+.cart-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+.cart-row.total{border-top:1px solid var(--bd);margin-top:8px;padding-top:12px;}
+.cart-row.total span{font-size:16px;font-weight:800;}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--sf);border-radius:20px 20px 0 0;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;background:var(--bd);border-radius:2px;margin:12px auto;}
+.modal-header{padding:4px 16px 16px;display:flex;align-items:center;gap:10px;}
+.modal-title{font-size:18px;font-weight:700;flex:1;}
+.modal-close{width:32px;height:32px;border-radius:50%;background:var(--sf2);border:none;color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:0 16px 24px;}
+/* BUTTONS */
+.btn-primary{width:100%;padding:14px;background:var(--or);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-primary:hover{background:var(--ord);}
+.btn-secondary{width:100%;padding:14px;background:transparent;border:1px solid var(--bd);border-radius:var(--radius);color:var(--tx);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-secondary:hover{border-color:var(--or);color:var(--or);}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-wa:hover{background:#1da851;}
+/* INPUT */
+.inp{width:100%;padding:12px 14px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--radius-sm);color:var(--tx);font-family:var(--font);font-size:14px;margin-bottom:12px;transition:.2s;}
+.inp:focus{outline:none;border-color:var(--or);}
+.inp::placeholder{color:var(--mt);}
+label.lbl{font-size:12px;color:var(--mt);margin-bottom:4px;display:block;font-weight:600;letter-spacing:.3px;}
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px;margin-bottom:4px;}
+.stat-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:12px;text-align:center;}
+.stat-num{font-size:20px;font-weight:800;color:var(--or);}
+.stat-lbl{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+/* GPS TRACKING */
+.gps-map{margin:16px;border-radius:var(--radius);overflow:hidden;height:200px;background:var(--sf2);border:1px solid var(--bd);position:relative;display:flex;align-items:center;justify-content:center;}
+.gps-map .map-pin{font-size:32px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+.gps-info{margin:0 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;}
+/* TOAST */
+.toast-container{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;}
+.toast{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:10px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;animation:toastIn .3s ease;white-space:nowrap;}
+.toast.ok{border-color:var(--ok);color:var(--ok);}
+.toast.err{border-color:var(--err);color:var(--err);}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+/* PROFILE */
+.profile-header{margin:16px;background:linear-gradient(135deg,var(--ord),var(--or));border-radius:var(--radius);padding:24px;display:flex;align-items:center;gap:16px;}
+.avatar{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:30px;}
+.profile-name{font-size:20px;font-weight:800;color:#fff;}
+.profile-phone{font-size:13px;color:rgba(255,255,255,.8);}
+.profile-menu{margin:0 16px;display:flex;flex-direction:column;gap:2px;}
+.pmenu-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--sf);border-radius:var(--radius-sm);cursor:pointer;transition:.2s;margin-bottom:2px;}
+.pmenu-item:hover{background:var(--sf2);}
+.pmenu-icon{font-size:20px;width:28px;text-align:center;}
+.pmenu-label{font-size:14px;font-weight:500;flex:1;}
+.pmenu-arrow{font-size:14px;color:var(--mt);}
+/* NOTIF BADGE */
+.notif-count{background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:auto;}
+/* CHIP */
+.chip{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600;border:1px solid var(--bd);cursor:pointer;transition:.2s;}
+.chip.active{background:var(--or);border-color:var(--or);color:#fff;}
+.chips-row{display:flex;gap:8px;overflow-x:auto;padding:0 16px;scrollbar-width:none;margin-bottom:12px;}
+.chips-row::-webkit-scrollbar{display:none;}
+/* LIVRAISON PAGE */
+.addr-input-box{margin:16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;}
+.addr-row{display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.addr-row:not(:last-child){border-bottom:1px solid var(--bd);}
+.addr-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.addr-dot.from{background:var(--ok);}
+.addr-dot.to{background:var(--or);}
+.addr-input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:14px;flex:1;}
+.addr-input::placeholder{color:var(--mt);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo-box">
+    <div class="logo-icon">JB</div>
+    <div>
+      <div class="logo-name">JB CLIENT</div>
+      <div class="logo-sub">JB LA SOLUTIONS</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn badge-dot" onclick="showNotifs()" title="Notifications">🔔</div>
+    <div class="icon-btn" onclick="openCart()" id="cart-btn" title="Panier">🛒</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- PAGE: ACCUEIL -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h2>Bienvenue sur JB 🇨🇲</h2>
+    <p>Achetez, commandez, faites livrer partout au Cameroun</p>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-white" onclick="navTo('page-livraison')">🏍️ Commander</button>
+      <button class="hbtn hbtn-outline" onclick="navTo('page-services')">🔧 Services</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">47</div><div class="stat-lbl">Boutiques</div></div>
+    <div class="stat-card"><div class="stat-num">23</div><div class="stat-lbl">Livreurs</div></div>
+    <div class="stat-card"><div class="stat-num">120+</div><div class="stat-lbl">Services</div></div>
+  </div>
+  <!-- Search -->
+  <div class="search-bar">
+    <span>🔍</span>
+    <input type="text" placeholder="Rechercher boutiques, produits, services..." id="home-search" oninput="handleSearch(this.value)">
+  </div>
+  <!-- Categories -->
+  <div class="sec-title">Catégories</div>
+  <div class="cat-scroll" id="cat-scroll">
+    <div class="cat-item active" onclick="filterCat('all',this)"><div class="cat-icon">🏪</div><div class="cat-label">Tout</div></div>
+    <div class="cat-item" onclick="filterCat('resto',this)"><div class="cat-icon">🍽️</div><div class="cat-label">Restaurants</div></div>
+    <div class="cat-item" onclick="filterCat('pharma',this)"><div class="cat-icon">💊</div><div class="cat-label">Pharmacie</div></div>
+    <div class="cat-item" onclick="filterCat('tech',this)"><div class="cat-icon">📱</div><div class="cat-label">Téléphones</div></div>
+    <div class="cat-item" onclick="filterCat('mode',this)"><div class="cat-icon">👗</div><div class="cat-label">Mode</div></div>
+    <div class="cat-item" onclick="filterCat('courses',this)"><div class="cat-icon">🛒</div><div class="cat-label">Courses</div></div>
+    <div class="cat-item" onclick="filterCat('sante',this)"><div class="cat-icon">🏥</div><div class="cat-label">Santé</div></div>
+    <div class="cat-item" onclick="filterCat('beaute',this)"><div class="cat-icon">💄</div><div class="cat-label">Beauté</div></div>
+  </div>
+  <!-- Boutiques -->
+  <div class="sec-row"><span>Boutiques proches</span><span class="see-all" onclick="navTo('page-shops')">Voir tout</span></div>
+  <div class="shops-grid" id="home-shops"></div>
+  <!-- Products -->
+  <div class="sec-row" style="margin-top:20px"><span>Produits populaires</span><span class="see-all" onclick="navTo('page-shops')">Voir tout</span></div>
+  <div class="products-grid" id="home-products"></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: BOUTIQUES -->
+<div class="page" id="page-shops">
+  <div class="search-bar">
+    <span>🔍</span>
+    <input type="text" placeholder="Rechercher une boutique..." id="shops-search" oninput="filterShops(this.value)">
+  </div>
+  <div class="chips-row" id="shops-chips">
+    <div class="chip active" onclick="filterShopsCat('all',this)">Toutes</div>
+    <div class="chip" onclick="filterShopsCat('resto',this)">Restaurants</div>
+    <div class="chip" onclick="filterShopsCat('pharma',this)">Pharmacies</div>
+    <div class="chip" onclick="filterShopsCat('tech',this)">Tech</div>
+    <div class="chip" onclick="filterShopsCat('mode',this)">Mode</div>
+  </div>
+  <div class="shops-grid" id="all-shops"></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: LIVRAISON -->
+<div class="page" id="page-livraison">
+  <div class="sec-title" style="margin-top:16px">🏍️ Commander une livraison</div>
+  <div class="addr-input-box">
+    <div class="addr-row">
+      <div class="addr-dot from"></div>
+      <input class="addr-input" placeholder="Votre position (départ)" id="addr-from">
+    </div>
+    <div class="addr-row">
+      <div class="addr-dot to"></div>
+      <input class="addr-input" placeholder="Adresse de livraison (destination)" id="addr-to">
+    </div>
+  </div>
+  <div class="sec-title">Type de livraison</div>
+  <div class="livraison-options" id="liv-options"></div>
+  <div class="gps-map" id="gps-map">
+    <div style="text-align:center">
+      <div class="map-pin">📍</div>
+      <div style="font-size:13px;color:var(--mt);margin-top:8px">Carte GPS — Google Maps intégré</div>
+    </div>
+  </div>
+  <div style="padding:0 16px;margin-top:12px">
+    <button class="btn-primary" onclick="commanderLivraison()">🏍️ Commander maintenant</button>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- PAGE: SERVICES -->
+<div class="page" id="page-services">
+  <div class="hero" style="margin-top:16px">
+    <h2>Services & Travailleurs</h2>
+    <p>Trouvez un professionnel près de vous rapidement</p>
+  </div>
+  <div class="sec-title">Catégories de services</div>
+  <div class="services-grid" id="services-grid"></div>
+  <div class="sec-row" style="margin-top:20px"><span>Disponibles maintenant</span><span class="see-all">Filtre</span></div>
+  <div class="workers-list" id="workers-list"></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: OBJETS PERDUS -->
+<div class="page" id="page-perdu">
+  <div class="sec-title" style="margin-top:16px">Objets Perdus & Trouvés</div>
+  <div style="padding:0 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <button class="btn-primary" onclick="openModal('modal-declare-perdu')" style="padding:12px">+ Déclarer perdu</button>
+    <button class="btn-secondary" onclick="openModal('modal-declare-trouve')" style="padding:12px">+ Déclarer trouvé</button>
+  </div>
+  <div class="chips-row">
+    <div class="chip active" onclick="filterPerdu('all',this)">Tous</div>
+    <div class="chip" onclick="filterPerdu('perdu',this)">Perdus</div>
+    <div class="chip" onclick="filterPerdu('trouve',this)">Trouvés</div>
+  </div>
+  <div class="lost-list" id="lost-list"></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: PANIER / CHECKOUT -->
+<div class="page" id="page-cart">
+  <div class="sec-title" style="margin-top:16px">Mon Panier 🛒</div>
+  <div class="cart-items" id="cart-items-list"></div>
+  <div class="cart-summary" id="cart-summary" style="display:none">
+    <div class="cart-row"><span style="color:var(--mt);font-size:14px">Sous-total</span><span id="cart-subtotal">0 FCFA</span></div>
+    <div class="cart-row"><span style="color:var(--mt);font-size:14px">Livraison</span><span>À définir</span></div>
+    <div class="cart-row total"><span>Total estimé</span><span id="cart-total" style="color:var(--or)">0 FCFA</span></div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+      <button class="btn-primary btn-wa" onclick="sendCartWhatsApp()">📱 Commander via WhatsApp</button>
+      <button class="btn-secondary" onclick="navTo('page-home')">Continuer les achats</button>
+    </div>
+  </div>
+  <div id="cart-empty" style="text-align:center;padding:60px 16px;display:none">
+    <div style="font-size:60px;margin-bottom:16px">🛒</div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:8px">Panier vide</div>
+    <div style="font-size:13px;color:var(--mt);margin-bottom:20px">Ajoutez des produits pour commander</div>
+    <button class="btn-primary" onclick="navTo('page-home')">Voir les boutiques</button>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- PAGE: PROFIL -->
+<div class="page" id="page-profile">
+  <div class="profile-header">
+    <div class="avatar">👤</div>
+    <div>
+      <div class="profile-name" id="user-name-display">Mon Compte</div>
+      <div class="profile-phone" id="user-phone-display">+237 6XX XXX XXX</div>
+    </div>
+  </div>
+  <div style="padding:0 16px;margin-bottom:16px">
+    <div class="stats-row" style="padding:0">
+      <div class="stat-card"><div class="stat-num" id="orders-count">0</div><div class="stat-lbl">Commandes</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-lbl">Favoris</div></div>
+      <div class="stat-card"><div class="stat-num">⭐ 0</div><div class="stat-lbl">Avis donnés</div></div>
+    </div>
+  </div>
+  <div class="profile-menu">
+    <div class="pmenu-item" onclick="openModal('modal-edit-profile')"><span class="pmenu-icon">✏️</span><span class="pmenu-label">Modifier le profil</span><span class="pmenu-arrow">›</span></div>
+    <div class="pmenu-item" onclick="navTo('page-cart')"><span class="pmenu-icon">📋</span><span class="pmenu-label">Mes commandes</span><span class="pmenu-arrow">›</span></div>
+    <div class="pmenu-item"><span class="pmenu-icon">❤️</span><span class="pmenu-label">Mes favoris</span><span class="pmenu-arrow">›</span></div>
+    <div class="pmenu-item" onclick="navTo('page-perdu')"><span class="pmenu-icon">🔍</span><span class="pmenu-label">Mes objets signalés</span><span class="pmenu-arrow">›</span></div>
+    <div class="pmenu-item"><span class="pmenu-icon">💬</span><span class="pmenu-label">Support client</span><span class="notif-count">1</span><span class="pmenu-arrow">›</span></div>
+    <div class="pmenu-item" onclick="switchApp('jb-livreur.html')"><span class="pmenu-icon">🏍️</span><span class="pmenu-label">Devenir livreur JB</span><span class="pmenu-arrow">›</span></div>
+    <div style="margin-top:20px">
+      <button class="btn-secondary" onclick="showToast('👋','Déconnexion réussie')">Se déconnecter</button>
+    </div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottomnav">
+  <div class="bnav-item active" onclick="navTo('page-home',this)" id="bn-home"><div class="ni">🏠</div><div class="nl">Accueil</div></div>
+  <div class="bnav-item" onclick="navTo('page-shops',this)" id="bn-shops"><div class="ni">🏪</div><div class="nl">Boutiques</div></div>
+  <div class="bnav-item" onclick="navTo('page-livraison',this)" id="bn-livraison"><div class="ni">🏍️</div><div class="nl">Livraison</div></div>
+  <div class="bnav-item" onclick="navTo('page-services',this)" id="bn-services"><div class="ni">🔧</div><div class="nl">Services</div></div>
+  <div class="bnav-item" onclick="navTo('page-perdu',this)" id="bn-perdu"><div class="ni">🔍</div><div class="nl">Perdus</div></div>
+  <div class="bnav-item" onclick="navTo('page-profile',this)" id="bn-profile"><div class="ni">👤</div><div class="nl">Profil</div></div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<!-- DECLARE PERDU -->
+<div class="modal-overlay" id="modal-declare-perdu">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Déclarer un objet perdu</div>
+      <button class="modal-close" onclick="closeModal('modal-declare-perdu')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="lbl">Nom de l'objet</label>
+      <input class="inp" id="perdu-nom" placeholder="Ex: Téléphone Samsung Galaxy A52">
+      <label class="lbl">Description</label>
+      <input class="inp" id="perdu-desc" placeholder="Couleur, caractéristiques...">
+      <label class="lbl">Lieu de perte</label>
+      <input class="inp" id="perdu-lieu" placeholder="Ex: Marché Mfoundi, Yaoundé">
+      <label class="lbl">Date de perte</label>
+      <input class="inp" type="date" id="perdu-date">
+      <label class="lbl">Votre WhatsApp</label>
+      <input class="inp" id="perdu-wa" placeholder="+237 6XX XXX XXX">
+      <button class="btn-primary" onclick="declarerPerdu()" style="margin-top:4px">📢 Publier l'annonce</button>
+    </div>
+  </div>
+</div>
+
+<!-- DECLARE TROUVE -->
+<div class="modal-overlay" id="modal-declare-trouve">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Déclarer un objet trouvé</div>
+      <button class="modal-close" onclick="closeModal('modal-declare-trouve')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="lbl">Objet trouvé</label>
+      <input class="inp" id="trouve-nom" placeholder="Ex: Portefeuille en cuir brun">
+      <label class="lbl">Description</label>
+      <input class="inp" id="trouve-desc" placeholder="Couleur, contenu...">
+      <label class="lbl">Lieu de découverte</label>
+      <input class="inp" id="trouve-lieu" placeholder="Ex: Avenue Kennedy, Douala">
+      <label class="lbl">Votre WhatsApp</label>
+      <input class="inp" id="trouve-wa" placeholder="+237 6XX XXX XXX">
+      <button class="btn-primary" onclick="declarerTrouve()" style="margin-top:4px">✅ Publier la découverte</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SHOP DETAIL -->
+<div class="modal-overlay" id="modal-shop-detail">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="shop-detail-name">Boutique</div>
+      <button class="modal-close" onclick="closeModal('modal-shop-detail')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="products-grid" id="shop-detail-products"></div>
+      <div style="margin-top:16px">
+        <button class="btn-primary btn-wa" id="shop-wa-btn">📱 Contacter sur WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL WORKER DETAIL -->
+<div class="modal-overlay" id="modal-worker-detail">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="worker-detail-name">Professionnel</div>
+      <button class="modal-close" onclick="closeModal('modal-worker-detail')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="worker-detail-content"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
+        <button class="btn-primary btn-wa" id="worker-wa-btn">📱 WhatsApp</button>
+        <button class="btn-secondary" id="worker-call-btn">📞 Appeler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT PROFILE -->
+<div class="modal-overlay" id="modal-edit-profile">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Modifier le profil</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-profile')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="lbl">Prénom & Nom</label>
+      <input class="inp" id="edit-name" placeholder="Votre nom complet">
+      <label class="lbl">Téléphone / WhatsApp</label>
+      <input class="inp" id="edit-phone" placeholder="+237 6XX XXX XXX">
+      <label class="lbl">Ville</label>
+      <input class="inp" id="edit-city" placeholder="Ex: Yaoundé, Douala...">
+      <button class="btn-primary" onclick="saveProfile()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMMANDER LIVRAISON -->
+<div class="modal-overlay" id="modal-livraison-confirm">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Confirmer la commande</div>
+      <button class="modal-close" onclick="closeModal('modal-livraison-confirm')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--sf2);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px" id="liv-confirm-details"></div>
+      <label class="lbl">Votre prénom</label>
+      <input class="inp" id="liv-client-name" placeholder="Votre prénom">
+      <label class="lbl">Votre WhatsApp</label>
+      <input class="inp" id="liv-client-wa" placeholder="+237 6XX XXX XXX">
+      <button class="btn-primary btn-wa" onclick="confirmerLivraison()">📱 Envoyer la commande</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const SHOPS = [
+  {id:1,name:'Chez Mama Ngo',cat:'resto',emoji:'🍽️',rating:4.8,reviews:124,wa:'+237699001001',desc:'Cuisine camerounaise authentique',ville:'Yaoundé',
+   products:[
+    {id:101,name:'Ndolé complet',price:2500,emoji:'🥘'},
+    {id:102,name:'Eru + Waterleaf',price:3000,emoji:'🍲'},
+    {id:103,name:'Poulet DG',price:4500,emoji:'🍗'},
+    {id:104,name:'Plantains frits',price:800,emoji:'🍌'}
+  ]},
+  {id:2,name:'TechShop Cameroun',cat:'tech',emoji:'📱',rating:4.6,reviews:89,wa:'+237699002002',desc:'Téléphones & Accessoires',ville:'Douala',
+   products:[
+    {id:201,name:'Samsung A54',price:175000,emoji:'📱'},
+    {id:202,name:'Écouteurs BT',price:15000,emoji:'🎧'},
+    {id:203,name:'Chargeur rapide',price:8000,emoji:'🔋'},
+    {id:204,name:'Coque protection',price:3500,emoji:'📱'}
+  ]},
+  {id:3,name:'Pharmacie Centrale',cat:'pharma',emoji:'💊',rating:4.9,reviews:203,wa:'+237699003003',desc:'Médicaments & Santé',ville:'Yaoundé',
+   products:[
+    {id:301,name:'Doliprane 1000mg',price:1200,emoji:'💊'},
+    {id:302,name:'Vitamine C 500mg',price:800,emoji:'🍊'},
+    {id:303,name:'Masques chirurgicaux',price:2000,emoji:'😷'},
+    {id:304,name:'Alcool désinfectant',price:1500,emoji:'🧴'}
+  ]},
+  {id:4,name:'Mode Africa Fashion',cat:'mode',emoji:'👗',rating:4.7,reviews:67,wa:'+237699004004',desc:'Vêtements & Tissus africains',ville:'Douala',
+   products:[
+    {id:401,name:'Robe pagne wax',price:25000,emoji:'👗'},
+    {id:402,name:'Boubou homme',price:30000,emoji:'👘'},
+    {id:403,name:'Tissu wax 6 yards',price:18000,emoji:'🪢'}
+  ]},
+  {id:5,name:'Supermarché JB',cat:'courses',emoji:'🛒',rating:4.5,reviews:156,wa:'+237699005005',desc:'Alimentation & Produits ménagers',ville:'Bafoussam',
+   products:[
+    {id:501,name:'Riz 5kg',price:4500,emoji:'🍚'},
+    {id:502,name:'Huile de palme 5L',price:6000,emoji:'🫙'},
+    {id:503,name:'Farine de blé 2kg',price:2500,emoji:'🌾'},
+    {id:504,name:'Savon OMO 2kg',price:3200,emoji:'🧼'}
+  ]},
+  {id:6,name:'Clinique Espoir',cat:'sante',emoji:'🏥',rating:4.8,reviews:45,wa:'+237699006006',desc:'Consultations & Soins médicaux',ville:'Yaoundé',
+   products:[
+    {id:601,name:'Consultation générale',price:5000,emoji:'👨‍⚕️'},
+    {id:602,name:'Prise de sang',price:8000,emoji:'🩸'},
+    {id:603,name:'Radiographie',price:15000,emoji:'🔬'}
+  ]},
+  {id:7,name:'Beauty Queens',cat:'beaute',emoji:'💄',rating:4.6,reviews:78,wa:'+237699007007',desc:'Cosmétiques & Beauté naturelle',ville:'Douala',
+   products:[
+    {id:701,name:'Crème karité pur',price:5000,emoji:'🧴'},
+    {id:702,name:'Huile de coco',price:3500,emoji:'🥥'},
+    {id:703,name:'Tresse africaine',price:12000,emoji:'💇‍♀️'}
+  ]}
+];
+
+const WORKERS = [
+  {id:1,name:'Jean-Paul Fotso',skill:'Électricien',emoji:'⚡',rating:4.9,reviews:87,online:true,ville:'Yaoundé',wa:'+237681001001',phone:'+237681001001',desc:'Installations électriques, dépannages urgents 24h/24'},
+  {id:2,name:'Marie Mbarga',skill:'Coiffeuse',emoji:'💇‍♀️',rating:4.8,reviews:134,online:true,ville:'Yaoundé',wa:'+237681002002',phone:'+237681002002',desc:'Tresses, défrisage, soins capillaires à domicile'},
+  {id:3,name:'Patrick Nkoa',skill:'Développeur Web',emoji:'💻',rating:5.0,reviews:23,online:false,ville:'Douala',wa:'+237681003003',phone:'+237681003003',desc:'Sites web, applications mobiles, React, Flutter'},
+  {id:4,name:'Sylvie Abomo',skill:'Couturière',emoji:'🧵',rating:4.7,reviews:56,online:true,ville:'Bafoussam',wa:'+237681004004',phone:'+237681004004',desc:'Confection robes, costume, retouches pagne wax'},
+  {id:5,name:'Robert Essama',skill:'Mécanicien',emoji:'🔧',rating:4.8,reviews:102,online:true,ville:'Douala',wa:'+237681005005',phone:'+237681005005',desc:'Réparations voitures, motos, diagnostics'},
+  {id:6,name:'Alice Ngo',skill:'Plombier',emoji:'🚿',rating:4.6,reviews:39,online:false,ville:'Yaoundé',wa:'+237681006006',phone:'+237681006006',desc:'Installation sanitaire, dépannage fuites'},
+  {id:7,name:'David Atangana',skill:'Réparateur Téléphones',emoji:'📱',rating:4.9,reviews:211,online:true,ville:'Yaoundé',wa:'+237681007007',phone:'+237681007007',desc:'iPhone, Samsung, Tecno — Écrans, batteries, logiciels'},
+  {id:8,name:'Emma Zang',skill:'Professeur',emoji:'📚',rating:5.0,reviews:67,online:true,ville:'Yaoundé',wa:'+237681008008',phone:'+237681008008',desc:'Maths, Physique, Français — Lycée & Université'},
+];
+
+const LOST_OBJECTS = [
+  {id:1,type:'perdu',nom:'iPhone 14 Pro',desc:'Couleur noire, coque rouge. Photos de famille dedans.',lieu:'Centre commercial Nlongkak',date:'2024-01-15',wa:'+237698001001',emoji:'📱'},
+  {id:2,type:'trouve',nom:'Portefeuille en cuir',desc:'Contient carte CNI et 25.000 FCFA.',lieu:'Avenue Kennedy, Douala',date:'2024-01-16',wa:'+237698002002',emoji:'👛'},
+  {id:3,type:'perdu',nom:'Clés de voiture Toyota',desc:'3 clés avec porte-clés rouge.',lieu:'Marché Mfoundi',date:'2024-01-14',wa:'+237698003003',emoji:'🔑'},
+  {id:4,type:'trouve',nom:'Sac à main Adidas',desc:'Sac sport noir avec vêtements intérieur.',lieu:'Stade Omnisport',date:'2024-01-16',wa:'+237698004004',emoji:'👜'},
+  {id:5,type:'perdu',nom:'Documents CNI & permis',desc:'Enveloppe avec documents importants.',lieu:'Gare routière Ekounou',date:'2024-01-13',wa:'+237698005005',emoji:'📄'},
+];
+
+const SERVICES_CATS = [
+  {key:'elec',name:'Électricien',emoji:'⚡'},{key:'dev',name:'Développeur',emoji:'💻'},
+  {key:'meca',name:'Mécanicien',emoji:'🔧'},{key:'plomb',name:'Plombier',emoji:'🚿'},
+  {key:'coiff',name:'Coiffeur(se)',emoji:'💇‍♀️'},{key:'coutur',name:'Couturier',emoji:'🧵'},
+  {key:'prof',name:'Professeur',emoji:'📚'},{key:'rep-tel',name:'Répar. Téléphone',emoji:'📱'},
+  {key:'graph',name:'Graphiste',emoji:'🎨'},{key:'soud',name:'Soudeur',emoji:'⚙️'},
+  {key:'macon',name:'Maçon',emoji:'🧱'},{key:'livreur',name:'Livreur',emoji:'🏍️'},
+];
+
+const LIV_OPTIONS = [
+  {id:'moto',name:'Motoman Express',desc:'Livraison rapide en moto — 30 min',emoji:'🏍️',prix:'500 FCFA/km',wa:'+237600100100'},
+  {id:'voiture',name:'Voiture Standard',desc:'Pour colis volumineux — 1h',emoji:'🚗',prix:'800 FCFA/km',wa:'+237600200200'},
+  {id:'colis',name:'Colis JB',desc:'Envoi colis entre villes',emoji:'📦',prix:'Sur devis',wa:'+237600300300'},
+];
+
+// ===== STATE =====
+let cart = [];
+let currentPage = 'page-home';
+let currentLivOption = null;
+let userProfile = JSON.parse(localStorage.getItem('jb_profile')||'{}');
+
+// ===== INIT =====
+function init(){
+  renderHomeShops();
+  renderHomeProducts();
+  renderAllShops();
+  renderServicesGrid();
+  renderWorkers();
+  renderLostObjects();
+  renderLivOptions();
+  updateCart();
+  updateProfileDisplay();
+}
+
+// ===== NAVIGATION =====
+function navTo(pageId, bnItem){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  currentPage = pageId;
+  if(pageId==='page-cart') renderCartPage();
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const map={'page-home':'bn-home','page-shops':'bn-shops','page-livraison':'bn-livraison','page-services':'bn-services','page-perdu':'bn-perdu','page-profile':'bn-profile','page-cart':'bn-profile'};
+  if(map[pageId]) document.getElementById(map[pageId]).classList.add('active');
+}
+
+function switchApp(app){
+  if(confirm('Ouvrir '+app+' ?\n\nCette application est dans le même écosystème JB LA SOLUTIONS.')){
+    window.open(app,'_blank');
+  }
+}
+
+// ===== MODALS =====
+function openModal(id){
+  const m = document.getElementById(id);
+  if(m){m.classList.add('open');document.body.style.overflow='hidden';}
+}
+function closeModal(id){
+  const m = document.getElementById(id);
+  if(m){m.classList.remove('open');document.body.style.overflow='';}
+}
+
+// ===== RENDER FUNCTIONS =====
+function renderHomeShops(){
+  const el = document.getElementById('home-shops');
+  if(!el) return;
+  el.innerHTML = SHOPS.slice(0,4).map(s=>shopCardHTML(s)).join('');
+}
+function renderAllShops(filter='all',search=''){
+  const el = document.getElementById('all-shops');
+  if(!el) return;
+  let shops = SHOPS;
+  if(filter !== 'all') shops = shops.filter(s=>s.cat===filter);
+  if(search) shops = shops.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())||s.desc.toLowerCase().includes(search.toLowerCase()));
+  el.innerHTML = shops.map(s=>shopCardHTML(s)).join('');
+}
+function shopCardHTML(s){
+  return `<div class="shop-card" onclick="openShopDetail(${s.id})">
+    <div class="shop-img">${s.emoji}</div>
+    <div class="shop-body">
+      <div class="shop-name">${s.name}</div>
+      <div class="shop-cat">${s.cat}</div>
+      <div class="shop-meta">
+        <span class="shop-rating">⭐ ${s.rating}</span>
+        <span>(${s.reviews})</span>
+        <span>• ${s.ville}</span>
+      </div>
+    </div>
+  </div>`;
+}
+function renderHomeProducts(){
+  const el = document.getElementById('home-products');
+  if(!el) return;
+  const prods = SHOPS.flatMap(s=>s.products.map(p=>({...p,shopId:s.id,shopName:s.name,shopWA:s.wa}))).slice(0,6);
+  el.innerHTML = prods.map(p=>prodCardHTML(p)).join('');
+}
+function prodCardHTML(p){
+  return `<div class="prod-card">
+    <div class="prod-img">${p.emoji}</div>
+    <div class="prod-body">
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-price">${p.price.toLocaleString('fr')} FCFA</div>
+      <div class="prod-shop">${p.shopName||''}</div>
+      <button class="prod-add" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">+</button>
+    </div>
+  </div>`;
+}
+function renderServicesGrid(){
+  const el = document.getElementById('services-grid');
+  if(!el) return;
+  el.innerHTML = SERVICES_CATS.map(s=>`
+    <div class="svc-card" onclick="filterWorkersByCat('${s.key}')">
+      <div class="svc-icon">${s.emoji}</div>
+      <div class="svc-name">${s.name}</div>
+    </div>`).join('');
+}
+function renderWorkers(list=WORKERS){
+  const el = document.getElementById('workers-list');
+  if(!el) return;
+  el.innerHTML = list.map(w=>`
+    <div class="worker-card" onclick="openWorkerDetail(${w.id})">
+      <div class="worker-avatar">${w.emoji}</div>
+      <div class="worker-info">
+        <div class="worker-name">${w.name}</div>
+        <div class="worker-skill">${w.skill}</div>
+        <div class="worker-meta"><span class="${w.online?'online-dot':''}"></span>${w.online?'Disponible':'Hors ligne'} • ⭐${w.rating} • ${w.ville}</div>
+      </div>
+      <div class="worker-actions">
+        <div class="wact-btn" onclick="event.stopPropagation();waWorker(${w.id})" title="WhatsApp">📱</div>
+        <div class="wact-btn" onclick="event.stopPropagation();callWorker(${w.id})" title="Appeler">📞</div>
+      </div>
+    </div>`).join('');
+}
+function renderLostObjects(filter='all'){
+  const el = document.getElementById('lost-list');
+  if(!el) return;
+  let objs = filter==='all' ? LOST_OBJECTS : LOST_OBJECTS.filter(o=>o.type===filter);
+  el.innerHTML = objs.map(o=>`
+    <div class="lost-card">
+      <div class="lost-header">
+        <div class="lost-icon">${o.emoji}</div>
+        <div>
+          <div class="lost-title">${o.nom}</div>
+          <span class="lost-type ${o.type}">${o.type==='perdu'?'PERDU':'TROUVÉ'}</span>
+        </div>
+      </div>
+      <div class="lost-desc">${o.desc}</div>
+      <div class="lost-meta">
+        <span>📍 ${o.lieu}</span>
+        <span>📅 ${o.date}</span>
+      </div>
+      <button onclick="contactPerdu('${o.wa}','${o.nom}')" style="margin-top:10px;padding:8px 14px;background:var(--or);border:none;border-radius:8px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;width:100%">📱 Contacter via WhatsApp</button>
+    </div>`).join('');
+}
+function renderLivOptions(){
+  const el = document.getElementById('liv-options');
+  if(!el) return;
+  el.innerHTML = LIV_OPTIONS.map(o=>`
+    <div class="liv-option" id="liv-${o.id}" onclick="selectLiv('${o.id}')">
+      <div class="liv-icon-box">${o.emoji}</div>
+      <div class="liv-info">
+        <div class="liv-name">${o.name}</div>
+        <div class="liv-desc">${o.desc}</div>
+      </div>
+      <div class="liv-price">${o.prix}</div>
+    </div>`).join('');
+}
+
+// ===== ACTIONS =====
+function openShopDetail(shopId){
+  const shop = SHOPS.find(s=>s.id===shopId);
+  if(!shop) return;
+  document.getElementById('shop-detail-name').textContent = shop.name+' '+shop.emoji;
+  document.getElementById('shop-detail-products').innerHTML = shop.products.map(p=>prodCardHTML({...p,shopId:shop.id,shopName:shop.name,shopWA:shop.wa})).join('');
+  document.getElementById('shop-wa-btn').onclick = ()=>window.open('https://wa.me/'+shop.wa.replace(/\D/g,''),'_blank');
+  openModal('modal-shop-detail');
+}
+function openWorkerDetail(wId){
+  const w = WORKERS.find(x=>x.id===wId);
+  if(!w) return;
+  document.getElementById('worker-detail-name').textContent = w.name;
+  document.getElementById('worker-detail-content').innerHTML = `
+    <div style="text-align:center;padding:16px 0">
+      <div style="font-size:60px;margin-bottom:8px">${w.emoji}</div>
+      <div style="font-size:16px;font-weight:700">${w.name}</div>
+      <div style="font-size:13px;color:var(--or);font-weight:600">${w.skill}</div>
+      <div style="font-size:12px;color:var(--mt);margin-top:4px">⭐ ${w.rating} • ${w.reviews} avis • ${w.ville}</div>
+      <div style="font-size:13px;margin-top:12px;color:var(--mt)">${w.desc}</div>
+      <div style="margin-top:8px;font-size:12px"><span style="background:${w.online?'rgba(34,197,94,.15)':'rgba(153,153,153,.15)'};color:${w.online?'var(--ok)':'var(--mt)'};padding:4px 10px;border-radius:12px;font-weight:600">${w.online?'🟢 Disponible':'🔴 Hors ligne'}</span></div>
+    </div>`;
+  document.getElementById('worker-wa-btn').onclick = ()=>window.open('https://wa.me/'+w.wa.replace(/\D/g,''),'_blank');
+  document.getElementById('worker-call-btn').onclick = ()=>window.open('tel:'+w.phone,'_blank');
+  openModal('modal-worker-detail');
+}
+
+function addToCart(prod){
+  const existing = cart.find(i=>i.id===prod.id);
+  if(existing){ existing.qty++; } else { cart.push({...prod,qty:1}); }
+  updateCart();
+  showToast('✅','Ajouté au panier!','ok');
+}
+function updateCart(){
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  const btn = document.getElementById('cart-btn');
+  if(btn) btn.textContent = count > 0 ? '🛒 '+count : '🛒';
+}
+function openCart(){ navTo('page-cart'); }
+function renderCartPage(){
+  const list = document.getElementById('cart-items-list');
+  const summary = document.getElementById('cart-summary');
+  const empty = document.getElementById('cart-empty');
+  if(cart.length===0){
+    if(list) list.innerHTML='';
+    if(summary) summary.style.display='none';
+    if(empty) empty.style.display='block';
+    return;
+  }
+  if(empty) empty.style.display='none';
+  if(summary) summary.style.display='block';
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  if(list) list.innerHTML = cart.map((item,idx)=>`
+    <div class="cart-item">
+      <div class="ci-img">${item.emoji}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">${(item.price*item.qty).toLocaleString('fr')} FCFA</div>
+        <div class="ci-qty">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+        </div>
+      </div>
+      <button onclick="removeFromCart(${idx})" style="background:none;border:none;color:var(--err);font-size:18px;cursor:pointer;align-self:flex-start">✕</button>
+    </div>`).join('');
+  const sub = document.getElementById('cart-subtotal');
+  const tot = document.getElementById('cart-total');
+  if(sub) sub.textContent = total.toLocaleString('fr')+' FCFA';
+  if(tot) tot.textContent = total.toLocaleString('fr')+' FCFA';
+}
+function changeQty(idx,delta){
+  cart[idx].qty += delta;
+  if(cart[idx].qty<=0) cart.splice(idx,1);
+  updateCart();
+  renderCartPage();
+}
+function removeFromCart(idx){ cart.splice(idx,1); updateCart(); renderCartPage(); }
+function sendCartWhatsApp(){
+  if(cart.length===0) return;
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const lines = ['🛒 *COMMANDE JB LA SOLUTIONS*',''];
+  cart.forEach(i=>lines.push(`• ${i.name} x${i.qty} = ${(i.price*i.qty).toLocaleString('fr')} FCFA`));
+  lines.push('');
+  lines.push(`💰 *Total: ${total.toLocaleString('fr')} FCFA*`);
+  lines.push('_Envoyé depuis JB LA SOLUTIONS 🇨🇲_');
+  const shopWA = cart[0].shopWA || '+237600000000';
+  window.open('https://wa.me/'+shopWA.replace(/\D/g,'')+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
+  cart=[]; updateCart(); renderCartPage();
+  showToast('🎉','Commande envoyée!','ok');
+}
+
+function selectLiv(id){
+  currentLivOption = LIV_OPTIONS.find(o=>o.id===id);
+  document.querySelectorAll('.liv-option').forEach(el=>el.classList.remove('selected'));
+  const el = document.getElementById('liv-'+id);
+  if(el) el.classList.add('selected');
+}
+function commanderLivraison(){
+  const from = document.getElementById('addr-from').value.trim();
+  const to = document.getElementById('addr-to').value.trim();
+  if(!from||!to){ showToast('⚠️','Remplissez les adresses!'); return; }
+  if(!currentLivOption){ showToast('⚠️','Choisissez un type de livraison!'); return; }
+  document.getElementById('liv-confirm-details').innerHTML = `
+    <div style="font-size:13px;line-height:1.8">
+      <div>🏍️ <strong>${currentLivOption.name}</strong></div>
+      <div>📍 De: ${from}</div>
+      <div>🎯 À: ${to}</div>
+      <div>💰 Prix: ${currentLivOption.prix}</div>
+    </div>`;
+  openModal('modal-livraison-confirm');
+}
+function confirmerLivraison(){
+  const name = document.getElementById('liv-client-name').value.trim();
+  const wa = document.getElementById('liv-client-wa').value.trim();
+  if(!name||!wa){ showToast('⚠️','Remplissez vos informations!'); return; }
+  const from = document.getElementById('addr-from').value.trim();
+  const to = document.getElementById('addr-to').value.trim();
+  const msg = `🏍️ *COMMANDE LIVRAISON — JB LA SOLUTIONS*\n\n👤 Client: *${name}*\n📱 WhatsApp: *${wa}*\n\n📍 Départ: ${from}\n🎯 Destination: ${to}\n🚗 Type: ${currentLivOption.name}\n💰 Prix: ${currentLivOption.prix}\n\n_Envoyé depuis JB LA SOLUTIONS 🇨🇲_`;
+  window.open('https://wa.me/'+currentLivOption.wa.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+  closeModal('modal-livraison-confirm');
+  showToast('🎉','Commande envoyée au livreur!','ok');
+}
+
+function declarerPerdu(){
+  const nom = document.getElementById('perdu-nom').value.trim();
+  const desc = document.getElementById('perdu-desc').value.trim();
+  const lieu = document.getElementById('perdu-lieu').value.trim();
+  const wa = document.getElementById('perdu-wa').value.trim();
+  if(!nom||!lieu||!wa){ showToast('⚠️','Remplissez les champs obligatoires!'); return; }
+  LOST_OBJECTS.unshift({id:Date.now(),type:'perdu',nom,desc,lieu,date:new Date().toISOString().split('T')[0],wa,emoji:'❓'});
+  closeModal('modal-declare-perdu');
+  renderLostObjects();
+  showToast('📢','Annonce publiée!','ok');
+}
+function declarerTrouve(){
+  const nom = document.getElementById('trouve-nom').value.trim();
+  const desc = document.getElementById('trouve-desc').value.trim();
+  const lieu = document.getElementById('trouve-lieu').value.trim();
+  const wa = document.getElementById('trouve-wa').value.trim();
+  if(!nom||!lieu||!wa){ showToast('⚠️','Remplissez les champs obligatoires!'); return; }
+  LOST_OBJECTS.unshift({id:Date.now(),type:'trouve',nom,desc,lieu,date:new Date().toISOString().split('T')[0],wa,emoji:'✅'});
+  closeModal('modal-declare-trouve');
+  renderLostObjects();
+  showToast('✅','Découverte publiée!','ok');
+}
+function contactPerdu(wa,nom){
+  const msg = `Bonjour, j'ai vu votre annonce pour "${nom}" sur JB LA SOLUTIONS. Je voudrais vous contacter à ce sujet.`;
+  window.open('https://wa.me/'+wa.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function waWorker(wId){
+  const w = WORKERS.find(x=>x.id===wId);
+  if(!w) return;
+  const msg = `Bonjour ${w.name}, j'ai trouvé votre profil sur JB LA SOLUTIONS. Je recherche un(e) ${w.skill}. Êtes-vous disponible?`;
+  window.open('https://wa.me/'+w.wa.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function callWorker(wId){
+  const w = WORKERS.find(x=>x.id===wId);
+  if(!w) return;
+  window.open('tel:'+w.phone,'_blank');
+}
+function filterWorkersByCat(cat){ showToast('🔧','Filtre: '+SERVICES_CATS.find(s=>s.key===cat)?.name||cat); }
+function filterCat(cat,el){
+  document.querySelectorAll('.cat-item').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  if(cat==='all'){ renderHomeShops(); } else { /* filter */ }
+}
+function filterShops(q){ renderAllShops(document.querySelector('.chips-row .chip.active')?.textContent.toLowerCase()||'all', q); }
+function filterShopsCat(cat,el){
+  document.querySelectorAll('#shops-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderAllShops(cat);
+}
+function filterPerdu(filter,el){
+  document.querySelectorAll('.chips-row .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderLostObjects(filter);
+}
+function handleSearch(q){
+  if(q.length>2) navTo('page-shops');
+}
+function showNotifs(){ showToast('🔔','Aucune nouvelle notification'); }
+function saveProfile(){
+  const name = document.getElementById('edit-name').value.trim();
+  const phone = document.getElementById('edit-phone').value.trim();
+  const city = document.getElementById('edit-city').value.trim();
+  if(name) userProfile.name=name;
+  if(phone) userProfile.phone=phone;
+  if(city) userProfile.city=city;
+  localStorage.setItem('jb_profile',JSON.stringify(userProfile));
+  updateProfileDisplay();
+  closeModal('modal-edit-profile');
+  showToast('✅','Profil mis à jour!','ok');
+}
+function updateProfileDisplay(){
+  const nd = document.getElementById('user-name-display');
+  const pd = document.getElementById('user-phone-display');
+  if(nd && userProfile.name) nd.textContent = userProfile.name;
+  if(pd && userProfile.phone) pd.textContent = userProfile.phone;
+}
+function showToast(icon, msg, type=''){
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast '+(type||'');
+  t.textContent = icon+' '+msg;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) closeModal(m.id); });
+});
+
+init();
+</script>
+</body>
+</html>
